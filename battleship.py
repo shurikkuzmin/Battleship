@@ -25,7 +25,8 @@ def draw(field):
             if field[row][column] == 1:
                 pygame.draw.rect(screen, (0,0,255),
                 ((column*box_size, row*box_size),(box_size, box_size)))
-            print(field[row][column])
+            pygame.draw.rect(screen, (255,255,255),
+            ((column*box_size, row*box_size),(box_size, box_size)),1)
 
 draw(field)
 
