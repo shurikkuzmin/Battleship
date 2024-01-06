@@ -37,13 +37,11 @@ def draw(field, isEnemy):
 
     for row in range(10):
         for column in range(10):
-            if field[row][column] == 1:
+            if field[row][column] == 1 and not isEnemy:
                 pygame.draw.rect(screen, (0,0,255),
                 ((shift + column*box_size, row*box_size),(box_size, box_size)))
             pygame.draw.rect(screen, (255,255,255),
             ((shift + column*box_size, row*box_size),(box_size, box_size)),1)
-
-
 
 draw(field, False)
 draw(field_enemy, True)
@@ -53,7 +51,9 @@ while isRunning:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
-
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = event.pos
+            #if x > 12 * box_size
     pygame.display.update()
 
 pygame.quit()
