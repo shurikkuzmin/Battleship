@@ -1,5 +1,6 @@
 import pygame
 import pygame.draw
+import random
 
 pygame.init()
 
@@ -40,8 +41,13 @@ def draw(field, isEnemy):
     for row in range(10):
         for column in range(10):
             color = (0,0,0)
-            if field[row][column] == 1 and not isEnemy:
-                color = (0, 0, 255)
+            if not isEnemy:
+                if field[row][column] == 1:
+                    color = (0, 0, 255)
+                if field[row][column] == 2:
+                    color = (255,0,0)
+                if field[row][column] == 3:
+                    color = (255,255,255)                    
             if isEnemy:
                 if field[row][column] == 2:
                     color = (255,0,0)
@@ -53,6 +59,7 @@ def draw(field, isEnemy):
             ((shift + column*box_size, row*box_size),(box_size, box_size)),1)
 
 
+myTurn = True
 isRunning = True
 while isRunning:
     for event in pygame.event.get():
@@ -60,6 +67,8 @@ while isRunning:
             isRunning = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
+        
+        if myTurn and :
             j = int((x - 12*box_size) / box_size)
             i = int(y / box_size)
             if j >= 0:
@@ -67,6 +76,18 @@ while isRunning:
                     field_enemy[i][j] = 2
                 if field_enemy[i][j] == 0:
                     field_enemy[i][j] = 3
+                myTurn = False
+        else:
+            while True:
+                i = random.randint(0,9)
+                j = random.randint(0,9)
+                if field[i][j] == 0 or field[i][j] == 1:
+                    break
+            if field[i][j] == 1:
+                field[i][j] = 2
+            if field[i][j] == 0:
+                field[i][j] = 3
+                myTurn = True
 
     draw(field, False)
     draw(field_enemy, True)
