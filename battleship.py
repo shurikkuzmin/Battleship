@@ -60,34 +60,44 @@ def draw(field, isEnemy):
 
 
 myTurn = True
+computerTurn = False
 isRunning = True
+buttonClicked = False
 while isRunning:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
+            buttonClicked = True
         
-        if myTurn and :
-            j = int((x - 12*box_size) / box_size)
-            i = int(y / box_size)
-            if j >= 0:
-                if field_enemy[i][j] == 1:
-                    field_enemy[i][j] = 2
-                if field_enemy[i][j] == 0:
-                    field_enemy[i][j] = 3
+    if buttonClicked and myTurn:
+        j = int((x - 12*box_size) / box_size)
+        i = int(y / box_size)
+        if j >= 0:
+            if field_enemy[i][j] == 1:
+                field_enemy[i][j] = 2
+            if field_enemy[i][j] == 0:
+                field_enemy[i][j] = 3
                 myTurn = False
-        else:
-            while True:
-                i = random.randint(0,9)
-                j = random.randint(0,9)
-                if field[i][j] == 0 or field[i][j] == 1:
-                    break
-            if field[i][j] == 1:
-                field[i][j] = 2
-            if field[i][j] == 0:
-                field[i][j] = 3
-                myTurn = True
+                computerTurn = True
+
+        buttonClicked = False
+
+    if computerTurn:
+        while True:
+            i = random.randint(0,9)
+            j = random.randint(0,9)
+            if field[i][j] == 0 or field[i][j] == 1:
+                break
+        if field[i][j] == 1:
+            field[i][j] = 2
+        if field[i][j] == 0:
+            field[i][j] = 3
+            myTurn = True
+            computerTurn = False
+
+            
 
     draw(field, False)
     draw(field_enemy, True)
