@@ -58,11 +58,19 @@ def draw(field, isEnemy):
             pygame.draw.rect(screen, (255,255,255),
             ((shift + column*box_size, row*box_size),(box_size, box_size)),1)
 
+def check(field):
+    for row in field:
+        for elem in row:
+            if elem == 1:
+                return False
+
+    return True
 
 myTurn = True
 computerTurn = False
 isRunning = True
 buttonClicked = False
+gameOver = False
 while isRunning:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -70,7 +78,11 @@ while isRunning:
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
             buttonClicked = True
-        
+ 
+    if gameOver and buttonClicked:
+        isRunning = False
+        continue
+
     if buttonClicked and myTurn:
         j = int((x - 12*box_size) / box_size)
         i = int(y / box_size)
@@ -95,12 +107,21 @@ while isRunning:
         if field[i][j] == 0:
             field[i][j] = 3
             myTurn = True
-            computerTurn = False
-
-            
+            computerTurn = False        
 
     draw(field, False)
     draw(field_enemy, True)
+
+    if check(field_enemy):
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render('I won', True, (0, 255, 0), (0,0,255))
+        rect = text.get_rect()
+        screen.blit(text,rect) 
+        gameOver = True
+    if check(field):
+        print("Computer won!")
+        gameOver = True
+    
 
     clock.tick(fps)
     pygame.display.update()
