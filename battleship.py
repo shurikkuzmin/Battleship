@@ -113,9 +113,10 @@ while isRunning:
     draw(field_enemy, True)
 
     if check(field_enemy):
-        font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render('I won', True, (0, 255, 0), (0,0,255))
+        font = pygame.font.Font('freesansbold.ttf', 200)
+        text = font.render('You won', True, (0, 255, 0))
         rect = text.get_rect()
+        rect.center = (screen_width/2, screen_height/2)
         screen.blit(text,rect) 
         gameOver = True
     if check(field):
