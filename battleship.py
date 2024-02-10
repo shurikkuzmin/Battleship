@@ -97,14 +97,39 @@ while isRunning:
         buttonClicked = False
 
     if computerTurn:
-        while True:
-            i = random.randint(0,9)
-            j = random.randint(0,9)
-            if field[i][j] == 0 or field[i][j] == 1:
-                break
+        moveSuccessful = False
+        if iOld != -1 and jOld != -1:
+            if field[iOld+1][jOld] < 2:
+                i = iOld + 1
+                j = jOld
+                moveSuccessful = True
+            elif field[iOld-1][jOld] < 2:
+                i = iOld - 1
+                j = jOld
+                moveSuccessful = True
+            elif field[iOld][jOld-1] < 2:
+                i = iOld
+                j = jOld - 1
+                moveSuccessful = True
+            elif field[iOld][jOld+1] < 2:
+                i = iOld
+                j = jOld + 1
+                moveSuccessful = True
+        
+        if not moveSuccessful:
+            while True:
+                i = random.randint(0,9)
+                j = random.randint(0,9)
+                if field[i][j] == 0 or field[i][j] == 1:
+                    break
         if field[i][j] == 1:
             field[i][j] = 2
+            iOld = i
+            jOld = j
+
         if field[i][j] == 0:
+            iOld = -1
+            jOld = -1
             field[i][j] = 3
             myTurn = True
             computerTurn = False        
@@ -112,18 +137,22 @@ while isRunning:
     draw(field, False)
     draw(field_enemy, True)
 
-    if check(field_enemy):
-        font = pygame.font.Font('freesansbold.ttf', 200)
-        text = font.render('You won', True, (0, 255, 0))
-        rect = text.get_rect()
-        rect.center = (screen_width/2, screen_height/2)
-        screen.blit(text,rect) 
-        gameOver = True
-    if check(field):
-        print("Computer won!")
-        gameOver = True
+    if not gameOver:
+        if check(field_enemy):
+            font = pygame.font.Font('freesansbold.ttf', 200)
+            text = font.render('You won', True, (0, 255, 0))
+            rect = text.get_rect()
+            rect.center = (screen_width/2, screen_height/2)
+            screen.blit(text,rect) 
+            gameOver = True
+        if check(field):
+            font = pygame.font.Font('freesansbold.ttf', 200)
+            text = font.render('You lost', True, (255, 0, 0))
+            rect = text.get_rect()
+            rect.center = (screen_width/2, screen_height/2)
+            screen.blit(text,rect)
+            gameOver = True
     
-
     clock.tick(fps)
     pygame.display.update()
 
