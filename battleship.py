@@ -99,22 +99,26 @@ while isRunning:
     if computerTurn:
         moveSuccessful = False
         if iOld != -1 and jOld != -1:
-            if field[iOld+1][jOld] < 2:
-                i = iOld + 1
-                j = jOld
-                moveSuccessful = True
-            elif field[iOld-1][jOld] < 2:
-                i = iOld - 1
-                j = jOld
-                moveSuccessful = True
-            elif field[iOld][jOld-1] < 2:
-                i = iOld
-                j = jOld - 1
-                moveSuccessful = True
-            elif field[iOld][jOld+1] < 2:
-                i = iOld
-                j = jOld + 1
-                moveSuccessful = True
+            if iOld < 9:
+                if field[iOld+1][jOld] < 2:
+                    i = iOld + 1
+                    j = jOld
+                    moveSuccessful = True
+            elif iOld > 0:
+                if field[iOld-1][jOld] < 2:
+                    i = iOld - 1
+                    j = jOld
+                    moveSuccessful = True
+            elif jOld > 0:
+                if field[iOld][jOld-1] < 2:
+                    i = iOld
+                    j = jOld - 1
+                    moveSuccessful = True
+            elif jOld < 9:
+                if field[iOld][jOld+1] < 2:
+                    i = iOld
+                    j = jOld + 1
+                    moveSuccessful = True
         
         if not moveSuccessful:
             while True:
