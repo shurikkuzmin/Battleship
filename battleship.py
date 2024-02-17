@@ -1,5 +1,6 @@
 import pygame
 import pygame.draw
+import pygame.time
 import random
 
 pygame.init()
@@ -71,7 +72,11 @@ computerTurn = False
 isRunning = True
 buttonClicked = False
 gameOver = False
+iOld = -1
+jOld = -1
 while isRunning:
+    clock.tick(fps)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
@@ -81,6 +86,9 @@ while isRunning:
  
     if gameOver and buttonClicked:
         isRunning = False
+        continue
+
+    if gameOver:
         continue
 
     if buttonClicked and myTurn:
@@ -96,7 +104,7 @@ while isRunning:
 
         buttonClicked = False
 
-    if computerTurn:
+    elif computerTurn:
         moveSuccessful = False
         if iOld != -1 and jOld != -1:
             if iOld < 9:
@@ -136,7 +144,8 @@ while isRunning:
             jOld = -1
             field[i][j] = 3
             myTurn = True
-            computerTurn = False        
+            computerTurn = False 
+        pygame.time.delay(700)       
 
     draw(field, False)
     draw(field_enemy, True)
@@ -157,7 +166,6 @@ while isRunning:
             screen.blit(text,rect)
             gameOver = True
     
-    clock.tick(fps)
     pygame.display.update()
 
 pygame.quit()
