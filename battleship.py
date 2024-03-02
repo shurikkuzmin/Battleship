@@ -119,6 +119,46 @@ def chooseMyCoordinates(x, y):
     i = int(y / box_size)
     return i,j
 
+def chooseCoordinate(turn):
+    i = -1
+    j = -1
+    if turn:
+        i,j = chooseMyCoordinates(x,y)
+    else:
+        i,j = chooseComputerCoordinates(iOld, jOld)
+    
+    return i,j
+
+
+def makeMyMove(i,j):
+    myTurn = True
+    computerTurn = False
+    if j >= 0:
+        if field_enemy[i][j] == 1:
+            field_enemy[i][j] = 2
+        if field_enemy[i][j] == 0:
+            field_enemy[i][j] = 3
+            myTurn = False
+            computerTurn = True
+    return myTurn, computerTurn
+
+def makeComputerMove(i,j):
+    myTurn = False
+    computerTurn = True
+    if field[i][j] == 1:
+        field[i][j] = 2
+        iOld = i
+        jOld = j
+
+    if field[i][j] == 0:
+        iOld = -1
+        jOld = -1
+        field[i][j] = 3
+        myTurn = True
+        computerTurn = False 
+    pygame.time.delay(700)
+    return myTurn, computerTurn, iOld, jOld
+
 
 myTurn = True
 computerTurn = False
@@ -127,6 +167,7 @@ buttonClicked = False
 gameOver = False
 iOld = -1
 jOld = -1
+turn = True
 while isRunning:
     clock.tick(fps)
 
@@ -144,34 +185,18 @@ while isRunning:
     if gameOver:
         continue
 
-    if buttonClicked and myTurn:
+    i,j = chooseCoordinates(turn)
+    turn = makeMove(turn)
 
-        i,j = chooseMyCoordinates(x, y)
-        if j >= 0:
-            if field_enemy[i][j] == 1:
-                field_enemy[i][j] = 2
-            if field_enemy[i][j] == 0:
-                field_enemy[i][j] = 3
-                myTurn = False
-                computerTurn = True
+    #if buttonClicked and myTurn:
+    #    i,j = chooseMyCoordinates(x, y)
+    #    myTurn, computerTurn = makeMyMove(i,j)
+    #    buttonClicked = False
 
-        buttonClicked = False
-
-    elif computerTurn:
-        i,j = chooseComputerCoordinates(iOld, jOld)
-        if field[i][j] == 1:
-            field[i][j] = 2
-            iOld = i
-            jOld = j
-
-        if field[i][j] == 0:
-            iOld = -1
-            jOld = -1
-            field[i][j] = 3
-            myTurn = True
-            computerTurn = False 
-        pygame.time.delay(700)       
-
+    #elif computerTurn:
+    #    i,j = chooseComputerCoordinates(iOld, jOld)
+    #    myTurn, computerTurn, iOld, jOld = makeComputerMove(i, j) 
+               
     draw(field, False)
     draw(field_enemy, True)
 
