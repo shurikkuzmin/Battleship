@@ -114,6 +114,12 @@ def chooseComputerCoordinates(iOld, jOld):
                 break
     return i, j
 
+def chooseMyCoordinates(x, y):
+    j = int((x - 12*box_size) / box_size)
+    i = int(y / box_size)
+    return i,j
+
+
 myTurn = True
 computerTurn = False
 isRunning = True
@@ -139,8 +145,8 @@ while isRunning:
         continue
 
     if buttonClicked and myTurn:
-        j = int((x - 12*box_size) / box_size)
-        i = int(y / box_size)
+
+        i,j = chooseMyCoordinates(x, y)
         if j >= 0:
             if field_enemy[i][j] == 1:
                 field_enemy[i][j] = 2
