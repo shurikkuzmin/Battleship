@@ -34,6 +34,24 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 fps = 120
 
+class Helper:
+    def __init__(self):
+        self.previousRow = -1
+        self.previousColumn = -1
+        self.mouseX = -1
+        self.mouseY = -1
+        self.mouseButton = False
+        self.gameOver = False
+    def mouseButtonClicked(self, event):
+        self.mouseButton = True
+        self.mouseX, self.mouseY = event.pos
+    
+    def toStop(self):
+        if self.gameOver and self.mouseButton:
+            return True
+        return False
+    
+
 def draw(field, isEnemy):
     shift = 0
     if isEnemy:
@@ -80,30 +98,30 @@ def checkGameOver():
         return True
     return False
 
-def chooseComputerCoordinates(iOld, jOld):
+def chooseComputerCoordinates(helper):
     i = -1
     j = -1
     moveSuccessful = False
-    if iOld != -1 and jOld != -1:
-        if iOld < 9:
-            if field[iOld+1][jOld] < 2:
-                i = iOld + 1
-                j = jOld
+    if helper.previousRow != -1 and helper.previousColumn != -1:
+        if helper.previousRow < 9:
+            if field[helper.previousRow+1][helper.previousColumn] < 2:
+                i = helper.previousRow + 1
+                j = helper.previousColumn
                 moveSuccessful = True
-        elif iOld > 0:
-            if field[iOld-1][jOld] < 2:
-                i = iOld - 1
-                j = jOld
+        elif helper.previousRow > 0:
+            if field[helper.previousRow-1][helper.previousColumn] < 2:
+                i = helper.previousRow - 1
+                j = helper.previousColumn
                 moveSuccessful = True
-        elif jOld > 0:
-            if field[iOld][jOld-1] < 2:
-                i = iOld
-                j = jOld - 1
+        elif helper.previousColumn > 0:
+            if field[helper.previousRow][helper.previousColumn-1] < 2:
+                i = helper.previousRow
+                j = helper.previousColumn - 1
                 moveSuccessful = True
-        elif jOld < 9:
-            if field[iOld][jOld+1] < 2:
-                i = iOld
-                j = jOld + 1
+        elif helper.previousColumn < 9:
+            if field[helper.previousRow][helper.previousColumn+1] < 2:
+                i = helper.previousRow
+                j = helper.previousColumn + 1
                 moveSuccessful = True
     
     if not moveSuccessful:
@@ -114,19 +132,18 @@ def chooseComputerCoordinates(iOld, jOld):
                 break
     return i, j
 
-def chooseMyCoordinates(x, y):
-    j = int((x - 12*box_size) / box_size)
-    i = int(y / box_size)
+def chooseMyCoordinates(helper):
+    j = int((helper.mouseX - 12*box_size) / box_size)
+    i = int(helper.mouseY / box_size)
     return i,j
 
-def chooseCoordinate(turn):
+def chooseCoordinates(turn, helper):
     i = -1
     j = -1
     if turn:
-        i,j = chooseMyCoordinates(x,y)
+        i,j = chooseMyCoordinates(helper)
     else:
-        i,j = chooseComputerCoordinates(iOld, jOld)
-    
+        i,j = chooseComputerCoordinates(helper)
     return i,j
 
 
@@ -160,14 +177,10 @@ def makeComputerMove(i,j):
     return myTurn, computerTurn, iOld, jOld
 
 
-myTurn = True
-computerTurn = False
 isRunning = True
-buttonClicked = False
-gameOver = False
-iOld = -1
-jOld = -1
 turn = True
+
+helper = Helper()
 while isRunning:
     clock.tick(fps)
 
@@ -175,17 +188,16 @@ while isRunning:
         if event.type == pygame.QUIT:
             isRunning = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            x, y = event.pos
-            buttonClicked = True
+            helper.mouseButtonClicked(event)
  
-    if gameOver and buttonClicked:
+    if helper.toStop():
         isRunning = False
         continue
 
-    if gameOver:
+    if helper.gameOver:
         continue
 
-    i,j = chooseCoordinates(turn)
+    i,j = chooseCoordinates(turn, helper)
     turn = makeMove(turn)
 
     #if buttonClicked and myTurn:
@@ -200,8 +212,8 @@ while isRunning:
     draw(field, False)
     draw(field_enemy, True)
 
-    if not gameOver:
-        gameOver = checkGameOver()
+    if not helper.gameOver:
+        helper.gameOver = checkGameOver()
     
     pygame.display.update()
 
