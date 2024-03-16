@@ -159,27 +159,27 @@ def makeMyMove(i,j):
     return True
 
 def makeComputerMove(i,j, helper):
-
+    localTurn = False
     if field[i][j] == 1:
         field[i][j] = 2
-        iOld = i
-        jOld = j
+        helper.previousRow = i
+        helper.previousColumn = j
 
     if field[i][j] == 0:
-        iOld = -1
-        jOld = -1
+        helper.previousRow = -1
+        helper.previousColumn = -1
         field[i][j] = 3
-        myTurn = True
-        computerTurn = False 
+        localTurn = True
+ 
     pygame.time.delay(700)
-    return myTurn, computerTurn, iOld, jOld
+    return localTurn
 
 def makeMove(turn, helper, i, j):
     localTurn = False
     if turn:
         localTurn = makeMyMove(i, j)
     else:
-        localTurn = makeComputerMove(i, j)
+        localTurn = makeComputerMove(i, j, helper)
     
     return localTurn
 
@@ -205,15 +205,6 @@ while isRunning:
 
     i,j = chooseCoordinates(turn, helper)
     turn = makeMove(turn, helper, i, j)
-
-    #if buttonClicked and myTurn:
-    #    i,j = chooseMyCoordinates(x, y)
-    #    myTurn, computerTurn = makeMyMove(i,j)
-    #    buttonClicked = False
-
-    #elif computerTurn:
-    #    i,j = chooseComputerCoordinates(iOld, jOld)
-    #    myTurn, computerTurn, iOld, jOld = makeComputerMove(i, j) 
                
     draw(field, False)
     draw(field_enemy, True)
