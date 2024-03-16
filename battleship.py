@@ -133,13 +133,16 @@ def chooseComputerCoordinates(helper):
     return i, j
 
 def chooseMyCoordinates(helper):
-    j = int((helper.mouseX - 12*box_size) / box_size)
+    j = -1
+    if helper.mouseX >= 12*box_size:
+        j = int((helper.mouseX - 12*box_size) / box_size)
     i = int(helper.mouseY / box_size)
     return i,j
 
 def chooseCoordinates(turn, helper):
     i = -1
     j = -1
+    helper.mouseButton = False
     if turn:
         i,j = chooseMyCoordinates(helper)
     else:
@@ -183,8 +186,22 @@ def makeMove(turn, helper, i, j):
     
     return localTurn
 
+def generateFieldEnemy():
+    arr = [[0,0,0,0,0,0,0,0,0,0] for x in range(10)]
+    for size in range(4,0,-1):
+        for numShips in range(5-size):
+            isVertical = random.choice([True, False])
+            i = random.randint(0, 9)
+            j = random.randint(0, 9)
+
+            if isVertical:
+
+    return arr
+
 isRunning = True
 turn = True
+
+field_enemy = generateFieldEnemy()
 
 helper = Helper()
 while isRunning:
