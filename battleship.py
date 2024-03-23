@@ -190,18 +190,41 @@ def generateFieldEnemy():
     arr = [[0,0,0,0,0,0,0,0,0,0] for x in range(10)]
     for size in range(4,0,-1):
         for numShips in range(5-size):
-            isVertical = random.choice([True, False])
-            i = random.randint(0, 9)
-            j = random.randint(0, 9)
+            
+            success = False
+            while not success:
+                isVertical = random.choice([True, False])
+                i = random.randint(0, 9)
+                j = random.randint(0, 9)
 
-            if isVertical:
+                allZeros = True
+                if isVertical:
+                    deltaRow = 1
+                    deltaColumn = 0
+                else:
+                    deltaRow = 0
+                    deltaColumn = 1
+                if (i + deltaRow*size >= 10) or (j + deltaColumn*size >= 10):
+                    continue 
 
+                for ind in range(size):
+                    #for ind2 in range(-1, 2):
+                    if arr[i+deltaRow*ind][j+deltaColumn*ind] != 0:
+                        allZeros = False
+                
+                if allZeros:
+                    success = True
+                    for ind in range(size):
+                        arr[i+deltaRow*ind][j+deltaColumn*ind] = 1
+                    
     return arr
 
 isRunning = True
 turn = True
 
 field_enemy = generateFieldEnemy()
+for i in range(10):
+    print(field_enemy[i])
 
 helper = Helper()
 while isRunning:
@@ -232,9 +255,3 @@ while isRunning:
     pygame.display.update()
 
 pygame.quit()
-
-
-
-print(field[3])
-
-print(field[2][2])
