@@ -186,6 +186,18 @@ def makeMove(turn, helper, i, j):
     
     return localTurn
 
+def checkNonEmpty(arr, i, j):
+    for indRow in range(-1,2):
+        if (i + indRow > 9) or (i + indRow < 0):
+            continue
+        for indColumn in range(-1,2):
+            if (j + indColumn > 9) or (j + indColumn < 0):
+                continue
+            if arr[i+indRow][j+indColumn] != 0:
+                return True
+    
+    return False
+
 def generateFieldEnemy():
     arr = [[0,0,0,0,0,0,0,0,0,0] for x in range(10)]
     for size in range(4,0,-1):
@@ -208,8 +220,7 @@ def generateFieldEnemy():
                     continue 
 
                 for ind in range(size):
-                    #for ind2 in range(-1, 2):
-                    if arr[i+deltaRow*ind][j+deltaColumn*ind] != 0:
+                    if checkNonEmpty(arr, i+deltaRow*ind, j+deltaColumn*ind):
                         allZeros = False
                 
                 if allZeros:
