@@ -33,6 +33,8 @@ screen_height = box_size * 10
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 fps = 120
+background = pygame.image.load("background.jpg")
+background = pygame.transform.scale(background, (10 * box_size, 10 * box_size))
 
 class Helper:
     def __init__(self):
@@ -57,6 +59,8 @@ def draw(field, isEnemy):
     if isEnemy:
         shift = 12 * box_size
     
+    screen.blit(background,(shift,0))
+    
     for row in range(10):
         for column in range(10):
             color = (0,0,0)
@@ -67,8 +71,9 @@ def draw(field, isEnemy):
                 color = (255,0,0)
             if field[row][column] == 3:
                 color = (255,255,255)    
-            pygame.draw.rect(screen, color,
-            ((shift + column*box_size, row*box_size),(box_size, box_size)))
+            if color != (0,0,0):
+                pygame.draw.rect(screen, color,
+                ((shift + column*box_size, row*box_size),(box_size, box_size)))
             pygame.draw.rect(screen, (255,255,255),
             ((shift + column*box_size, row*box_size),(box_size, box_size)),1)
 
