@@ -1,20 +1,21 @@
 import pygame
 import pygame.draw
 import pygame.time
+import pygame.mouse
 import random
 
 pygame.init()
 
-field = [[0,0,0,0,1,0,0,0,1,0],
-         [0,0,1,0,0,0,0,0,0,0],
-         [0,0,0,0,0,1,0,1,0,1],
-         [0,0,0,0,0,1,0,1,0,0],
-         [0,0,0,0,0,1,0,1,0,0],
-         [0,0,0,0,0,1,0,0,0,0],
-         [0,1,1,1,0,0,0,0,0,0],
+field = [[0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
-         [0,1,1,0,0,1,1,0,1,0],
-         [0,0,0,0,0,0,0,0,1,0]]
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0]]
 
 field_enemy = [[0,0,1,0,0,0,0,0,1,1],
                [0,0,0,0,0,0,0,0,0,0],
@@ -235,13 +236,43 @@ def generateFieldEnemy():
                     
     return arr
 
+def draw_button():
+    pygame.draw.rect(screen,(255,255,255),(14*box_size,4*box_size,6*box_size,2*box_size),border_radius=17)
+    font = pygame.font.Font('freesansbold.ttf', 60)
+    text = font.render("Ready?", True, (0, 0, 0))
+    rect = text.get_rect()
+    rect.center = (17*box_size, 5*box_size)
+    screen.blit(text,rect)
+
 isRunning = True
 turn = True
 
 field_enemy = generateFieldEnemy()
-for i in range(10):
-    print(field_enemy[i])
 
+while isRunning:
+    clock.tick(fps)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            isRunning = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = event.pos
+            mouse_buttons = pygame.mouse.get_pressed(3)
+            i = -1
+            j = -1
+            if x <= 10*box_size:
+                j = int( x / box_size)
+                i = int( y / box_size)
+            if j != -1 and mouse_buttons[0]:
+                field[i][j] = 1
+
+        #    helper.mouseButtonClicked(event)
+    
+    draw(field, False)
+    draw_button()
+    pygame.display.update()
+
+isRunning = True
 helper = Helper()
 while isRunning:
     clock.tick(fps)
