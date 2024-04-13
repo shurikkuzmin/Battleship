@@ -266,6 +266,9 @@ while isRunning:
             if j != -1 and mouse_buttons[0]:
                 field[i][j] = 1
 
+            if j != -1 and mouse_buttons[2] and field[i][j] == 1:
+                field[i][j] = 0
+
         #    helper.mouseButtonClicked(event)
     
     draw(field, False)
