@@ -236,19 +236,27 @@ def generateFieldEnemy():
                     
     return arr
 
-def draw_button():
-    pygame.draw.rect(screen,(255,255,255),(14*box_size,4*box_size,6*box_size,2*box_size),border_radius=17)
-    font = pygame.font.Font('freesansbold.ttf', 60)
-    text = font.render("Ready?", True, (0, 0, 0))
-    rect = text.get_rect()
-    rect.center = (17*box_size, 5*box_size)
-    screen.blit(text,rect)
+class Button:
+    def __init__(self):
+        self.rect = pygame.Rect(14*box_size,4*box_size,6*box_size,2*box_size)
+    
+    def draw_button(self,x, y):
+        if self.rect.collidepoint(x,y):
+            pygame.draw.rect(screen,(100,100,100),self.rect,border_radius=17)
+        else:
+            pygame.draw.rect(screen,(255,255,255),self.rect,border_radius=17)
+
+        font = pygame.font.Font('freesansbold.ttf', 60)
+        text = font.render("Ready?", True, (0, 0, 0))
+        rect = text.get_rect()
+        rect.center = self.rect.center
+        screen.blit(text,rect)
 
 isRunning = True
 turn = True
 
 field_enemy = generateFieldEnemy()
-
+button = Button()
 while isRunning:
     clock.tick(fps)
 
@@ -269,10 +277,14 @@ while isRunning:
             if j != -1 and mouse_buttons[2] and field[i][j] == 1:
                 field[i][j] = 0
 
-        #    helper.mouseButtonClicked(event)
+            if mouse_buttons[0]:
+                if button.rect.collidepoint(x,y):
+                    isRunning = False  
     
+        #    helper.mouseButtonClicked(event)
+    x, y = pygame.mouse.get_pos()
     draw(field, False)
-    draw_button()
+    button.draw_button(x,y)
     pygame.display.update()
 
 isRunning = True
