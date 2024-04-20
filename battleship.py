@@ -252,6 +252,34 @@ class Button:
         rect.center = self.rect.center
         screen.blit(text,rect)
 
+def checkConfiguration(field):
+    coors = []
+    for i in range(10):
+        for j in range(10):
+            if field[i][j]==1:
+                coors.append([i,j])
+
+    while len(coors) > 0:
+        ship = [coors.pop(0)]
+        count = 0
+        while len(ship) > 0:
+            first = ship.pop(0)
+            i = first[0]
+            j = first[1]
+            field[i][j] = 2
+            count = count + 1
+            for indRow in range(-1,2):
+                if (i + indRow > 9) or (i + indRow < 0):
+                    continue
+                for indColumn in range(-1,2):
+                    if (j + indColumn > 9) or (j + indColumn < 0):
+                        continue
+                    if field[i+indRow][j+indColumn] == 1:
+                        ship.append([i+indRow][j+indColumn])
+        print("Ship size: ",count)
+    print(coors)
+    return False
+
 isRunning = True
 turn = True
 
@@ -279,7 +307,7 @@ while isRunning:
 
             if mouse_buttons[0]:
                 if button.rect.collidepoint(x,y):
-                    isRunning = False  
+                    isRunning = checkConfiguration(field)  
     
         #    helper.mouseButtonClicked(event)
     x, y = pygame.mouse.get_pos()
