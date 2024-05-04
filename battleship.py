@@ -256,14 +256,17 @@ def checkConfiguration(field):
     coors = []
     for i in range(10):
         for j in range(10):
-            if field[i][j]==1:
+            if field[i][j] == 1:
                 coors.append([i,j])
-
+    
+    sizesOfShips = []
     while len(coors) > 0:
-        ship = [coors.pop(0)]
+        ship = [coors[0]]
         count = 0
         while len(ship) > 0:
             first = ship.pop(0)
+            coors.remove(first)
+
             i = first[0]
             j = first[1]
             field[i][j] = 2
@@ -275,9 +278,21 @@ def checkConfiguration(field):
                     if (j + indColumn > 9) or (j + indColumn < 0):
                         continue
                     if field[i+indRow][j+indColumn] == 1:
-                        ship.append([i+indRow][j+indColumn])
+                        if ship.count([i+indRow, j+indColumn]) == 0:
+                            ship.append([i+indRow, j+indColumn])
+        sizesOfShips.append(count)
         print("Ship size: ",count)
-    print(coors)
+    for i in range(10):
+        for j in range(10):
+            if field[i][j] == 2:
+                field[i][j] = 1
+
+    for i in range(1,4):
+        if sizesOfShips.count(i) != 5 - i:
+            return True 
+            # Otrugatsya
+            print("Tupaya skotina!!!")
+
     return False
 
 isRunning = True
