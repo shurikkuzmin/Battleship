@@ -252,6 +252,7 @@ class Button:
         rect.center = self.rect.center
         screen.blit(text,rect)
 
+
 def checkConfiguration(field):
     coors = []
     for i in range(10):
@@ -263,13 +264,14 @@ def checkConfiguration(field):
     while len(coors) > 0:
         ship = [coors[0]]
         count = 0
+        isVertical = False
+        isHorizontal = False
         while len(ship) > 0:
             first = ship.pop(0)
             coors.remove(first)
 
             i = first[0]
             j = first[1]
-            field[i][j] = 2
             count = count + 1
             for indRow in range(-1,2):
                 if (i + indRow > 9) or (i + indRow < 0):
@@ -277,21 +279,24 @@ def checkConfiguration(field):
                 for indColumn in range(-1,2):
                     if (j + indColumn > 9) or (j + indColumn < 0):
                         continue
-                    if field[i+indRow][j+indColumn] == 1:
+                    if [i+indRow, j+indColumn] in coors:
+                        if indRow != 0:
+                            isVertical = True
+                        if indColumn != 0:
+                            isHorizontal = True
                         if ship.count([i+indRow, j+indColumn]) == 0:
                             ship.append([i+indRow, j+indColumn])
+        if isVertical and isHorizontal:
+            return True
         sizesOfShips.append(count)
         print("Ship size: ",count)
-    for i in range(10):
-        for j in range(10):
-            if field[i][j] == 2:
-                field[i][j] = 1
+    
 
     for i in range(1,4):
         if sizesOfShips.count(i) != 5 - i:
-            return True 
-            # Otrugatsya
-            print("Tupaya skotina!!!")
+            return True
+    if len(sizesOfShips) != 10:
+        return True 
 
     return False
 
@@ -305,7 +310,9 @@ while isRunning:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            isRunning = False
+            pygame.quit()
+            exit(0)
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
             mouse_buttons = pygame.mouse.get_pressed(3)
