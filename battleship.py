@@ -37,6 +37,13 @@ fps = 120
 background = pygame.image.load("background.jpg")
 background = pygame.transform.scale(background, (10 * box_size, 10 * box_size))
 
+all_ships = pygame.image.load("ships_transparent.png")
+ship1 = all_ships.subsurface((0,1000),(450,420))
+ship1_color = pygame.Surface(ship1.get_size())
+ship1_color.fill((255,0,0))
+ship1.blit(ship1_color, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
+ship1 = pygame.transform.scale(ship1, (box_size, box_size))
+
 class Helper:
     def __init__(self):
         self.previousRow = -1
@@ -45,6 +52,8 @@ class Helper:
         self.mouseY = -1
         self.mouseButton = False
         self.gameOver = False
+        self.ships = []
+        self.ships_direction = []
     def mouseButtonClicked(self, event):
         self.mouseButton = True
         self.mouseX, self.mouseY = event.pos
@@ -54,6 +63,8 @@ class Helper:
             return True
         return False
     
+
+helper = Helper()
 
 def draw(field, isEnemy):
     shift = 0
@@ -77,6 +88,13 @@ def draw(field, isEnemy):
                 ((shift + column*box_size, row*box_size),(box_size, box_size)))
             pygame.draw.rect(screen, (255,255,255),
             ((shift + column*box_size, row*box_size),(box_size, box_size)),1)
+    
+    if not isEnemy:
+        for ship in helper.ships:
+            if len(ship) == 1:
+                screen.blit(ship1, (ship[0][1]*box_size, ship[0][0]*box_size))
+
+
 
 def check(field):
     for row in field:
@@ -253,7 +271,7 @@ class Button:
         screen.blit(text,rect)
 
 
-def checkConfiguration(field):
+def checkConfiguration(field, helper):
     coors = []
     for i in range(10):
         for j in range(10):
@@ -261,14 +279,18 @@ def checkConfiguration(field):
                 coors.append([i,j])
     
     sizesOfShips = []
+    all_ships = []
+    all_ships_direction = []
     while len(coors) > 0:
         ship = [coors[0]]
+        current_ship = []
         count = 0
         isVertical = False
         isHorizontal = False
         while len(ship) > 0:
             first = ship.pop(0)
             coors.remove(first)
+            current_ship.append(first)
 
             i = first[0]
             j = first[1]
@@ -289,14 +311,25 @@ def checkConfiguration(field):
         if isVertical and isHorizontal:
             return True
         sizesOfShips.append(count)
+        all_ships.append(current_ship)
+        if isHorizontal:
+            all_ships_direction.append(True)
+        else:
+            all_ships_direction.append(False)
+
         print("Ship size: ",count)
     
+    print(all_ships)
+    print(all_ships_direction)
 
     for i in range(1,4):
         if sizesOfShips.count(i) != 5 - i:
             return True
     if len(sizesOfShips) != 10:
         return True 
+
+    helper.ships = all_ships
+    helper.ships_direction = all_ships_direction
 
     return False
 
@@ -329,7 +362,7 @@ while isRunning:
 
             if mouse_buttons[0]:
                 if button.rect.collidepoint(x,y):
-                    isRunning = checkConfiguration(field)  
+                    isRunning = checkConfiguration(field, helper)  
     
         #    helper.mouseButtonClicked(event)
     x, y = pygame.mouse.get_pos()
@@ -338,7 +371,6 @@ while isRunning:
     pygame.display.update()
 
 isRunning = True
-helper = Helper()
 while isRunning:
     clock.tick(fps)
 
