@@ -2,6 +2,7 @@ import pygame
 import pygame.draw
 import pygame.time
 import pygame.mouse
+import pygame.transform
 import random
 
 pygame.init()
@@ -37,12 +38,14 @@ fps = 120
 background = pygame.image.load("background.jpg")
 background = pygame.transform.scale(background, (10 * box_size, 10 * box_size))
 
-all_ships = pygame.image.load("ships_transparent.png")
-ship1 = all_ships.subsurface((0,1000),(450,420))
-ship1_color = pygame.Surface(ship1.get_size())
-ship1_color.fill((255,0,0))
-ship1.blit(ship1_color, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
-ship1 = pygame.transform.scale(ship1, (box_size, box_size))
+def cropShipImage(startX, startY, imageWidth, imageHeight, ship_size):
+    all_ships = pygame.image.load("ships_transparent.png")
+    ship = all_ships.subsurface((startX,startY),(imageWidth,imageHeight))
+    ship_color = pygame.Surface(ship.get_size())
+    ship_color.fill((255,0,0))
+    ship.blit(ship_color, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
+    ship = pygame.transform.scale(ship, (ship_size*box_size, box_size))
+    return ship
 
 class Helper:
     def __init__(self):
@@ -54,6 +57,7 @@ class Helper:
         self.gameOver = False
         self.ships = []
         self.ships_direction = []
+        self.ships_images = []
     def mouseButtonClicked(self, event):
         self.mouseButton = True
         self.mouseX, self.mouseY = event.pos
@@ -65,6 +69,10 @@ class Helper:
     
 
 helper = Helper()
+ship1 = cropShipImage(0,1000,450,420,1)
+ship2 = cropShipImage(750,880,500,1500-880,2)
+
+helper.ships_images = [ship1, ship2]
 
 def draw(field, isEnemy):
     shift = 0
@@ -90,12 +98,13 @@ def draw(field, isEnemy):
             ((shift + column*box_size, row*box_size),(box_size, box_size)),1)
     
     if not isEnemy:
-        for ship in helper.ships:
-            if len(ship) == 1:
-                screen.blit(ship1, (ship[0][1]*box_size, ship[0][0]*box_size))
-
-
-
+        for i,ship in enumerate(helper.ships):
+            if len(ship) <= 2:
+                image = helper.ships_images[len(ship)-1]
+                if not helper.ships_direction[i]:
+                    image = pygame.transform.rotate(image,-90.0)
+                screen.blit(image, (ship[0][1]*box_size, ship[0][0]*box_size))
+                
 def check(field):
     for row in field:
         for elem in row:
@@ -312,7 +321,7 @@ def checkConfiguration(field, helper):
             return True
         sizesOfShips.append(count)
         all_ships.append(current_ship)
-        if isHorizontal:
+        if isHorizontal or count == 1:
             all_ships_direction.append(True)
         else:
             all_ships_direction.append(False)
