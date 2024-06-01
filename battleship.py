@@ -141,9 +141,9 @@ def chooseComputerCoordinates(helper):
     moveSuccessful = False
     horizontal_dir = 0
     vertical_dir = 0
-    if helper.prepreviousRow != -1 and helper.prepreviosColumn != -1:
-        horizontal_dir = helper.previousColumn - helper.prepreviousColumn
-        vertical_dir = helper.previousRow - helper.prepreviousRow
+    # if helper.prepreviousRow != -1 and helper.prepreviosColumn != -1:
+    #     horizontal_dir = helper.previousColumn - helper.prepreviousColumn
+    #     vertical_dir = helper.previousRow - helper.prepreviousRow
 
     if helper.previousRow != -1 and helper.previousColumn != -1:
         # if horizontal_dir != 0:
