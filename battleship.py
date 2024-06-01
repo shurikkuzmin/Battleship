@@ -70,11 +70,15 @@ class Helper:
 
 helper = Helper()
 ship1 = cropShipImage(0,1000,450,420,1)
-ship2 = cropShipImage(750,880,500,1500-880,2)
+#ship2 = cropShipImage(750,880,500,1500-880,2)
+#ship1 = cropShipImage(2500,2000,1000,450,1)
+ship2 = cropShipImage(2500,2000,1000,450,2)
+ship3 = cropShipImage(2500,2000,1000,450,3)
+ship4 = cropShipImage(2500,2000,1000,450,4)
+#ship4 = cropShipImage(1350,1500,2100-1350,800,4)
+helper.ships_images = [ship1, ship2, ship3, ship4]
 
-helper.ships_images = [ship1, ship2]
-
-def draw(field, isEnemy):
+def draw(field, isEnemy, isDraft):
     shift = 0
     if isEnemy:
         shift = 12 * box_size
@@ -84,7 +88,7 @@ def draw(field, isEnemy):
     for row in range(10):
         for column in range(10):
             color = (0,0,0)
-            if not isEnemy:
+            if not isEnemy and isDraft:
                 if field[row][column] == 1:
                     color = (0, 0, 255)
             if field[row][column] == 2:
@@ -99,7 +103,7 @@ def draw(field, isEnemy):
     
     if not isEnemy:
         for i,ship in enumerate(helper.ships):
-            if len(ship) <= 2:
+            if len(ship) <= 4:
                 image = helper.ships_images[len(ship)-1]
                 if not helper.ships_direction[i]:
                     image = pygame.transform.rotate(image,-90.0)
@@ -135,7 +139,25 @@ def chooseComputerCoordinates(helper):
     i = -1
     j = -1
     moveSuccessful = False
+    horizontal_dir = 0
+    vertical_dir = 0
+    if helper.prepreviousRow != -1 and helper.prepreviosColumn != -1:
+        horizontal_dir = helper.previousColumn - helper.prepreviousColumn
+        vertical_dir = helper.previousRow - helper.prepreviousRow
+
     if helper.previousRow != -1 and helper.previousColumn != -1:
+        # if horizontal_dir != 0:
+        #     if field[helper.previousRow][helper.previousColumn + horizontal_dir] < 2:
+        #         i = helper.previousRow 
+        #         j = helper.previousColumn + horizontal_dir
+        #         return i,j
+ 
+        # if vertical_dir != 0:
+        #     if field[helper.previousRow + vertical_dir][helper.previousColumn] < 2:
+        #         i = helper.previousRow + vertical_dir
+        #         j = helper.previousColumn
+        #         return i,j 
+         
         if helper.previousRow < 9:
             if field[helper.previousRow+1][helper.previousColumn] < 2:
                 i = helper.previousRow + 1
@@ -198,12 +220,16 @@ def makeComputerMove(i,j, helper):
     localTurn = False
     if field[i][j] == 1:
         field[i][j] = 2
+        helper.prepreviousRow = helper.previousRow
+        helper.prepreviousColumn = helper.previousColumn
         helper.previousRow = i
         helper.previousColumn = j
 
     if field[i][j] == 0:
         helper.previousRow = -1
         helper.previousColumn = -1
+        helper.prepreviousRow = -1
+        helper.prepreviousColumn = -1
         field[i][j] = 3
         localTurn = True
  
@@ -375,7 +401,7 @@ while isRunning:
     
         #    helper.mouseButtonClicked(event)
     x, y = pygame.mouse.get_pos()
-    draw(field, False)
+    draw(field, False, True)
     button.draw_button(x,y)
     pygame.display.update()
 
@@ -399,8 +425,8 @@ while isRunning:
     i,j = chooseCoordinates(turn, helper)
     turn = makeMove(turn, helper, i, j)
                
-    draw(field, False)
-    draw(field_enemy, True)
+    draw(field, False, False)
+    draw(field_enemy, True, False)
 
     if not helper.gameOver:
         helper.gameOver = checkGameOver()
